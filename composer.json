@@ -1,0 +1,27 @@
+{
+	"name": "hypejunction/avatars",
+	"version": "0.0.0",
+	"type": "elgg-plugin",
+	"description": "Avatar API",
+	"homepage": "http://hypejunction.com",
+	"keywords": [
+		"elgg", "plugin", "image", "avatar"
+	],
+	"license": "GPL-2.0",
+	"authors": [
+		{
+			"name": "Ismayil Khayredinov",
+			"email": "info@hypejunction.com"
+		}
+	],
+	"require": {
+		"php": ">=5.5",
+		"composer/installers": "~1.0",
+		"hypejunction/images": "~1.0",
+		"hypejunction/cropper": "~1.0"
+	},
+	"suggest": {
+		"hypejunction/avatars_user": "~1.0"
+	}
+}
+
