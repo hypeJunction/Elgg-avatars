@@ -12,7 +12,7 @@ if (!$container) {
 	forward('', '404');
 }
 
-if (!$container->canWriteToContainer(0, 'object', hypeJunction\Images\Avatar::SUBTYPE)) {
+if (!avatars_enabled($container->getType(), $container->getSubtype()) || !$container->canWriteToContainer(0, 'object', hypeJunction\Images\Avatar::SUBTYPE)) {
 	forward('', '403');
 }
 

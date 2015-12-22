@@ -18,35 +18,30 @@ elgg_register_event_handler('init', 'system', 'avatars_init');
  */
 function avatars_init() {
 
-	elgg_register_plugin_hook_handler('container_permissions_check', 'object', 'avatars_permissions_check');
-
 	elgg_register_plugin_hook_handler('entity:url', 'object', 'avatars_entity_url_handler');
 	elgg_register_plugin_hook_handler('entity:icon:url', 'all', 'avatars_entity_icon_url_handler');
 
 	elgg_register_event_handler('update:after', 'all', 'avatars_update_avatar_access');
 
 	elgg_register_page_handler('avatars', 'avatars_page_handler');
-	
+
 	elgg_register_action('avatars/upload', __DIR__ . '/actions/avatars/upload.php');
 	elgg_register_action('avatars/crop', __DIR__ . '/actions/avatars/crop.php');
 }
 
 /**
- * Container permissions filter
- * By default, avatars are not allowed to be stored in arbitrary containers
- *
- * @param string $hook   "container_permissions_check"
- * @param string $type   "object"
- * @param bool   $return Permission
- * @param array  $params Hook params
- * @return array
+ * Check if avatars enabled for entities of given type and subtype
+ * 
+ * @param string $type    Entity type
+ * @param string $subtype Entity subtype
+ * @return bool
  */
-function avatars_permissions_check($hook, $type, $return, $params) {
-
-	$subtype = elgg_extract('subtype', $params);
-	if ($subtype == 'avatar') {
-		return false;
+function avatars_enabled($type, $subtype = null) {
+	$hook_type = $type;
+	if ($subtype) {
+		$hook_type = "$type:$subtype";
 	}
+	return elgg_trigger_plugin_hook('avatars:enabled', $hook_type, null, false);
 }
 
 /**

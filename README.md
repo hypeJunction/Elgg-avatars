@@ -14,7 +14,7 @@ Entity Avatars for Elgg
 
 ### Allow avatars
 
-To allow entities to have avatars, use `'container_permissions_check','object'` hook.
+To allow entities to have avatars, use `'avatars:enabled', "$type:$subtype"` hook.
 
 ### Input Field
 
