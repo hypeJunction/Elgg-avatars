@@ -32,7 +32,7 @@ $upload_limit = elgg_echo('file:upload_limit', [elgg_format_bytes($max_upload)])
 	if ($entity->guid && $entity->canDelete()) {
 		echo elgg_view('output/url', [
 			'text' => elgg_echo('delete:this'),
-			'href' => "action/delete?guid=$entity->guid",
+			'href' => "/action/entity/delete?guid=$entity->guid",
 			'confirm' => true,
 			'class' => 'elgg-button elgg-button-delete float-alt',
 		]);
