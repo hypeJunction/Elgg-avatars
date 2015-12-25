@@ -160,6 +160,10 @@ function avatars_entity_icon_url_handler($hook, $type, $return, $params) {
 	$entity = elgg_extract('entity', $params);
 	$size = elgg_extract('size', $params);
 
+	if (!avatars_enabled($entity->getType(), $entity->getSubtype())) {
+		return;
+	}
+	
 	$avatar = avatars_get_avatar($entity);
 	if ($avatar) {
 		return $avatar->getIconURL($size);
