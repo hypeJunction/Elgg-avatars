@@ -29,6 +29,7 @@ if (!$container->canEdit() || !$container->canWriteToContainer(0, 'object', hype
 
 $avatar = avatars_create_avatar_from_upload($container, 'avatar');
 if ($avatar) {
+	$container->icontime = $avatar->time_created;
 	if ($container instanceof ElggUser) {
 		if (elgg_trigger_event('profileiconupdate', $container->type, $container)) {
 			$view = 'river/user/default/profileiconupdate';
