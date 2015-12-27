@@ -86,7 +86,7 @@ function avatars_create_avatar_from_upload(ElggEntity $entity, $input_name = 'av
 		move_uploaded_file($_FILES[$input_name]['tmp_name'], $avatar->getFilenameOnFilestore());
 
 		$avatar->mimetype = ElggFile::detectMimeType($_FILES[$input_name]['tmp_name'], $_FILES[$input_name]['type']);
-		$avatar->simpletype = $input_name;
+		$avatar->simpletype = 'image';
 		$avatar->originafilename = $_FILES[$input_name]['name'];
 		$avatar->title = $avatar->originalfilename;
 
