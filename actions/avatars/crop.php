@@ -45,7 +45,6 @@ if ($entity->save()) {
 		}
 	}
 	system_message(elgg_echo('avatar:crop:success'));
-	forward($entity->getURL());
 } else {
 	register_error(elgg_echo('avatar:crop:fail'));
 }

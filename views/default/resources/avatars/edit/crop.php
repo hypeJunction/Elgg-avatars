@@ -23,7 +23,7 @@ elgg_push_breadcrumb(elgg_echo('avatars'), '/avatars/all');
 if ($container) {
 	elgg_push_breadcrumb($container->getDisplayName(), $entity->getURL());
 }
-elgg_push_breadcrumb(elgg_echo('avatar'), $entity->getURL());
+elgg_push_breadcrumb(elgg_echo('avatar'));
 
 $title = elgg_echo('avatars:edit');
 elgg_push_breadcrumb($title);

@@ -18,7 +18,6 @@ elgg_register_event_handler('init', 'system', 'avatars_init');
  */
 function avatars_init() {
 
-	elgg_register_plugin_hook_handler('entity:url', 'object', 'avatars_entity_url_handler');
 	elgg_register_plugin_hook_handler('entity:icon:url', 'all', 'avatars_entity_icon_url_handler');
 
 	elgg_register_event_handler('update:after', 'all', 'avatars_update_avatar_access');
@@ -45,23 +44,6 @@ function avatars_enabled($type, $subtype = null) {
 }
 
 /**
- * Avatar URLs
- * 
- * @param string $hook   "entity:url"
- * @param string $type   "object"
- * @param string $return URL
- * @param array  $params Hook params
- * @return string
- */
-function avatars_entity_url_handler($hook, $type, $return, $params) {
-
-	$entity = elgg_extract('entity', $params);
-	if ($entity instanceof Avatar) {
-		return "avatars/view/$entity->guid";
-	}
-}
-
-/**
  * Create an avatar object from an upload
  *
  * @param ElggEntity $entity     Entity to which avatar will belong
@@ -70,36 +52,21 @@ function avatars_entity_url_handler($hook, $type, $return, $params) {
  */
 function avatars_create_avatar_from_upload(ElggEntity $entity, $input_name = 'avatar') {
 
-	if (!empty($_FILES[$input_name]['name']) && $_FILES[$input_name]['error'] == UPLOAD_ERR_OK && substr_count($_FILES[$input_name]['type'], 'image/')) {
+	avatars_clear_avatars($entity);
 
-		avatars_clear_avatars($entity);
+	$avatar = new Avatar();
+	$avatar->owner_guid = $entity instanceof ElggUser ? $entity->guid : $entity->owner_guid;
+	$avatar->container_guid = $entity->guid;
+	$avatar->access_id = $entity->access_id;
+	$avatar->setFilename("avatars/$entity->guid/" . time() . $_FILES[$input_name]['name']);
 
-		$avatar = new Avatar();
-		$avatar->owner_guid = $entity instanceof ElggUser ? $entity->guid : $entity->owner_guid;
-		$avatar->container_guid = $entity->guid;
-		$avatar->access_id = $entity->access_id;
+	$avatar = images()->createFromUpload($input_name, $avatar);
 
-		$avatar->setFilename("avatars/$entity->guid/" . time() . $_FILES[$input_name]['name']);
-
-		$avatar->open('write');
-		$avatar->close();
-		move_uploaded_file($_FILES[$input_name]['tmp_name'], $avatar->getFilenameOnFilestore());
-
-		$avatar->mimetype = ElggFile::detectMimeType($_FILES[$input_name]['tmp_name'], $_FILES[$input_name]['type']);
-		$avatar->simpletype = 'image';
-		$avatar->originafilename = $_FILES[$input_name]['name'];
-		$avatar->title = $avatar->originalfilename;
-
-		if (!$avatar->exists() || !$avatar->save()) {
-			$avatar->delete();
-			return false;
-		}
-
+	if ($avatar && $avatar->save()) {
 		$entity->avatar_last_modified = $avatar->time_created;
-		return $avatar;
 	}
 
-	return false;
+	return $avatar;
 }
 
 /**
@@ -163,7 +130,7 @@ function avatars_entity_icon_url_handler($hook, $type, $return, $params) {
 	if (!avatars_enabled($entity->getType(), $entity->getSubtype())) {
 		return;
 	}
-	
+
 	$avatar = avatars_get_avatar($entity);
 	if ($avatar) {
 		return $avatar->getIconURL($size);
@@ -217,13 +184,6 @@ function avatars_page_handler($segments, $identifier) {
 
 		case 'edit' :
 			echo elgg_view("resources/avatars/edit", [
-				'guid' => $segments[0],
-				'identifier' => $identifier,
-			]);
-			return true;
-
-		case 'view' :
-			echo elgg_view("resources/avatars/view", [
 				'guid' => $segments[0],
 				'identifier' => $identifier,
 			]);

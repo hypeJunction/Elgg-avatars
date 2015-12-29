@@ -28,6 +28,7 @@ if (!$container->canEdit() || !$container->canWriteToContainer(0, 'object', hype
 }
 
 $avatar = avatars_create_avatar_from_upload($container, 'avatar');
+
 if ($avatar) {
 	$container->icontime = $avatar->time_created;
 	if ($container instanceof ElggUser) {
@@ -38,15 +39,14 @@ if ($avatar) {
 				'view' => $view,
 				'action_type' => 'update',
 				'subject_guid' => $container->guid,
-				'object_guid' => $container->guid,
+				'object_guid' => $avatar->guid,
 			]);
 		}
 	}
 
 	system_message(elgg_echo('avatar:upload:success'));
-	forward("avatars/edit/$avatar->guid?tab=crop");
 } else {
-	register_error(elgg_echo('avatars:upload:fail'));
-	forward(REFERRER);
+	register_error(elgg_echo('avatar:upload:fail'));
 }
 
+forward(REFERRER);
