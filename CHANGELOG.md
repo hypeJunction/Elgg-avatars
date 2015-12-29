@@ -1,3 +1,17 @@
+<a name="1.0.3"></a>
+## [1.0.3](https://github.com/hypeJunction/Elgg-avatars/compare/1.0.2...v1.0.3) (2015-12-29)
+
+
+### Bug Fixes
+
+* **avatars:** fix simpletype ([79dc16a](https://github.com/hypeJunction/Elgg-avatars/commit/79dc16a))
+
+### Features
+
+* **api:** update images API usage and remove entity view ([7cabd9b](https://github.com/hypeJunction/Elgg-avatars/commit/7cabd9b))
+
+
+
 <a name="1.0.2"></a>
 ## [1.0.2](https://github.com/hypeJunction/Elgg-avatars/compare/1.0.1...v1.0.2) (2015-12-25)
 
