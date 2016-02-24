@@ -46,6 +46,7 @@ $body = elgg_view_layout('content', [
 	'title' => $title,
 	'filter' => elgg_view('filters/avatars/edit', [
 		'filter_context' => 'upload',
+		'entity' => $entity,
 	]),
 		]);
 
