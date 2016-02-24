@@ -22,4 +22,5 @@ foreach ($tabs as $tab) {
 
 echo elgg_view_menu('filter', [
 	'sort_by' => 'priority',
+	'entity' => $entity,
 ]);
