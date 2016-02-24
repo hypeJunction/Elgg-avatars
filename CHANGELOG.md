@@ -1,3 +1,14 @@
+<a name="1.1.1"></a>
+## [1.1.1](https://github.com/hypeJunction/Elgg-avatars/compare/1.1.0...v1.1.1) (2016-02-24)
+
+
+### Bug Fixes
+
+* **views:** pass entity to the filter view ([11e5a35](https://github.com/hypeJunction/Elgg-avatars/commit/11e5a35))
+* **views:** pass entity to the filter view ([0de10da](https://github.com/hypeJunction/Elgg-avatars/commit/0de10da))
+
+
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/hypeJunction/Elgg-avatars/compare/1.0.3...v1.1.0) (2015-12-29)
 
