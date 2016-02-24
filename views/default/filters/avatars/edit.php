@@ -1,5 +1,9 @@
 <?php
 
+$entity = elgg_extract('entity', $vars);
+if (!$entity) {
+	return;
+}
 $filter_context = elgg_extract('filter_context', $vars, 'upload');
 
 $tabs = [

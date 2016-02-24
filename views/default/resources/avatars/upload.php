@@ -42,7 +42,10 @@ $content = elgg_view_form('avatars/upload', [
 $body = elgg_view_layout('content', [
 	'content' => $content,
 	'title' => $title,
-	'filter' => '',
+	'filter' => elgg_view('filters/avatars/edit', [
+		'filter_context' => 'upload',
+		'container' => $container,
+	]),
 		]);
 
 echo elgg_view_page($title, $body);
