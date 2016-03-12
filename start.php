@@ -70,6 +70,34 @@ function avatars_create_avatar_from_upload(ElggEntity $entity, $input_name = 'av
 }
 
 /**
+ * Create an avatar from a file resource
+ * 
+ * @param ElggEntity $entity Entity to which avatar will belong
+ * @param type       $path   Path to file
+ * @return Avatar|false
+ */
+function avatars_create_aavatar_from_resource(ElggEntity $entity, $path) {
+
+	avatars_clear_avatars($entity);
+
+	$basename = pathinfo($path, PATHINFO_BASENAME);
+
+	$avatar = new Avatar();
+	$avatar->owner_guid = $entity instanceof ElggUser ? $entity->guid : $entity->owner_guid;
+	$avatar->container_guid = $entity->guid;
+	$avatar->access_id = $entity->access_id;
+	$avatar->setFilename("avatars/$entity->guid/" . time() . $basename);
+
+	$avatar = images()->createFromResource($path, $avatar);
+
+	if ($avatar && $avatar->save()) {
+		$entity->avatar_last_modified = $avatar->time_created;
+	}
+
+	return $avatar;
+}
+
+/**
  * Clear all entity avatars
  *
  * @param ElggEntity $entity Entity
