@@ -17,11 +17,7 @@ elgg_register_event_handler('init', 'system', 'avatars_init');
  * @return void
  */
 function avatars_init() {
-
-	elgg_register_plugin_hook_handler('entity:icon:url', 'all', 'avatars_entity_icon_url_handler');
-
-	elgg_register_event_handler('update:after', 'all', 'avatars_update_avatar_access');
-
+	
 	elgg_register_page_handler('avatars', 'avatars_page_handler');
 
 	elgg_register_action('avatars/upload', __DIR__ . '/actions/avatars/upload.php');
@@ -51,22 +47,7 @@ function avatars_enabled($type, $subtype = null) {
  * @return Avatar|false
  */
 function avatars_create_avatar_from_upload(ElggEntity $entity, $input_name = 'avatar') {
-
-	avatars_clear_avatars($entity);
-
-	$avatar = new Avatar();
-	$avatar->owner_guid = $entity instanceof ElggUser ? $entity->guid : $entity->owner_guid;
-	$avatar->container_guid = $entity->guid;
-	$avatar->access_id = $entity->access_id;
-	$avatar->setFilename("avatars/$entity->guid/" . time() . $_FILES[$input_name]['name']);
-
-	$avatar = images()->createFromUpload($input_name, $avatar);
-
-	if ($avatar && $avatar->save()) {
-		$entity->avatar_last_modified = $avatar->time_created;
-	}
-
-	return $avatar;
+	return elgg_images_create_avatar_from_upload($entity, $input_name);
 }
 
 /**
@@ -76,25 +57,8 @@ function avatars_create_avatar_from_upload(ElggEntity $entity, $input_name = 'av
  * @param type       $path   Path to file
  * @return Avatar|false
  */
-function avatars_create_aavatar_from_resource(ElggEntity $entity, $path) {
-
-	avatars_clear_avatars($entity);
-
-	$basename = pathinfo($path, PATHINFO_BASENAME);
-
-	$avatar = new Avatar();
-	$avatar->owner_guid = $entity instanceof ElggUser ? $entity->guid : $entity->owner_guid;
-	$avatar->container_guid = $entity->guid;
-	$avatar->access_id = $entity->access_id;
-	$avatar->setFilename("avatars/$entity->guid/" . time() . $basename);
-
-	$avatar = images()->createFromResource($path, $avatar);
-
-	if ($avatar && $avatar->save()) {
-		$entity->avatar_last_modified = $avatar->time_created;
-	}
-
-	return $avatar;
+function avatars_create_avatar_from_resource(ElggEntity $entity, $path) {
+	return elgg_images_create_avatar_from_resource($entity, $path);
 }
 
 /**
@@ -104,20 +68,7 @@ function avatars_create_aavatar_from_resource(ElggEntity $entity, $path) {
  * @return void
  */
 function avatars_clear_avatars(ElggEntity $entity) {
-	$avatars = elgg_get_entities([
-		'types' => 'object',
-		'subtypes' => Avatar::SUBTYPE,
-		'container_guids' => (int) $entity->guid,
-		'limit' => 0,
-	]);
-
-	if ($avatars) {
-		foreach ($avatars as $avatar) {
-			$avatar->delete();
-		}
-	}
-
-	unset($entity->avatar_last_modified);
+	return elgg_images_clear_avatars($entity);
 }
 
 /**
@@ -127,68 +78,7 @@ function avatars_clear_avatars(ElggEntity $entity) {
  * @return Avatar|false
  */
 function avatars_get_avatar(ElggEntity $entity) {
-
-	if (!$entity->avatar_last_modified) {
-		return false;
-	}
-
-	$avatars = elgg_get_entities([
-		'types' => 'object',
-		'subtypes' => Avatar::SUBTYPE,
-		'container_guids' => $entity->guid,
-		'limit' => 1,
-	]);
-	return !empty($avatars) ? $avatars[0] : false;
-}
-
-/**
- * Replace entity icon URL if entity has an avatar
- *
- * @param string $hook   "entity:icon:url"
- * @param string $type   "all"
- * @param string $return Icon URL
- * @param array  $params Hook params
- * @return array
- */
-function avatars_entity_icon_url_handler($hook, $type, $return, $params) {
-
-	$entity = elgg_extract('entity', $params);
-	$size = elgg_extract('size', $params);
-
-	if (!avatars_enabled($entity->getType(), $entity->getSubtype())) {
-		return;
-	}
-
-	$avatar = avatars_get_avatar($entity);
-	if ($avatar) {
-		return $avatar->getIconURL($size);
-	}
-}
-
-/**
- * Update avatar access id when entity is saved
- *
- * @param string     $event  "update:after"
- * @param string     $type   "
- * @param ElggEntity $entity
- */
-function avatars_update_avatar_access($event, $type, $entity) {
-
-	$access_id = (int) $entity->access_id;
-	$avatars = elgg_get_entities([
-		'types' => 'object',
-		'subtypes' => Avatar::SUBTYPE,
-		'container_guids' => (int) $entity->guid,
-		'limit' => 0,
-		'wheres' => [
-			"e.access_id != $access_id"
-		],
-	]);
-
-	foreach ($avatars as $avatar) {
-		$avatar->access_id = $access_id;
-		$avatar->save();
-	}
+	return elgg_images_get_avatar($entity);
 }
 
 /**
